@@ -10,9 +10,19 @@ plt.style.use('classic')
 import numpy.random as ran
 import scipy.optimize as opt
 import scipy.stats as stat
+pi = np.pi
 # ----------------------------------------------------------------------
 # function definitions
 # ----------------------------------------------------------------------
+def calc_G(T, O):
+    # T stands Tau - for the observed oscillation period
+    # O looks like Theta - for the equilibrium angle of the balance
+    # Constant Definitions
+    R = .0449 # meters
+    d = 0.06656 # meters
+    M = .917 # Kilograms
+    return ((((2*pi/T)**2)*R**2)*d/M)*O
+
 def chi_squared(ydata, y_bestfit, sigma):
     cs = np.sum(((ydata - y_bestfit)**2)/(sigma**2))
     csr = cs / 18
@@ -55,9 +65,9 @@ def LeastSquaresFit(xdata, ydata, y_sigma):
    # guess_param_2 = 
    # guess_params = np.array([ ])
    xsmooth = np.linspace(np.min(xdata),np.max(xdata), 1000)
-   fsmooth = ImpGuessMagFunc(xsmooth, *guess_params)
+   # fsmooth = GuessFunc(xsmooth, *guess_params)
    plt.plot(xsmooth, fsmooth, color='red',
-           label='Manual Impedance Guess', alpha=0.9)
+           label='Guess', alpha=0.9)
    popt, pcov = opt.curve_fit(ImpGuessMagFunc, xdata, ydata,
            sigma=y_sigma, p0=guess_params, absolute_sigma=1)
    fsmooth_next = ImpGuessMagFunc(xsmooth, *popt)
