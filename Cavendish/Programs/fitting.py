@@ -57,21 +57,24 @@ def linfit(xdata, ydata, yerror):
     
     return np.array([slope, intercept, sigma_slope, sigma_intercept])
 
-def LeastSquaresFit(xdata, ydata, y_sigma):
+def LeastSquaresFit(xdata, ydata, y_sigma, func_pntr, guess_params):
    # Least Squares Fit was originally a python program written by Prof.
    # David Smith, I have adapted and altered it to be generalized as an
    # individual function.
-   # guess_param_1 = 
-   # guess_param_2 = 
-   # guess_params = np.array([ ])
+   if type(func_pntr) is not type(LeastSquaresFit):
+       print("Function Pointer (func_pntr) not provided.")
+       return
+   if type(guess_params) is not type([]):
+       print("Guess_Params must be type list.")
+       return
    xsmooth = np.linspace(np.min(xdata),np.max(xdata), 1000)
-   # fsmooth = GuessFunc(xsmooth, *guess_params)
+   fsmooth = func_pntr(xsmooth, *guess_params)
    plt.plot(xsmooth, fsmooth, color='red',
            label='Guess', alpha=0.9)
-   popt, pcov = opt.curve_fit(ImpGuessMagFunc, xdata, ydata,
+   popt, pcov = opt.curve_fit(func_pntr, xdata, ydata,
            sigma=y_sigma, p0=guess_params, absolute_sigma=1)
-   fsmooth_next = ImpGuessMagFunc(xsmooth, *popt)
-   plt.plot(xsmooth, fsmooth_next, color='red',
+   fsmooth_next = func_pntr(xsmooth, *popt)
+   plt.plot(xsmooth, fsmooth_next, color='green',
             label='Line of Best Fit', alpha=0.5)
    plt.legend(loc=1)
    plt.savefig("LSF.pdf")
