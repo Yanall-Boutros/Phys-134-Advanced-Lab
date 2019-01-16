@@ -13,6 +13,16 @@ import csv
 # ========================================================================
 # Function Definitions
 # ========================================================================
+def diff_G(G):
+    gact = 6.67*10**-11
+    return (G - gact)/(gact)
+def calc_O(defl):
+    L = 2.593
+    return defl/(4*L)
+def calc_K(T):
+    d = 0.06656 # meters
+    m = .0147 # Kilograms
+    return 2*m*d**2*(2*np.pi/T)**2
 def calc_G(T, O):
     # T stands Tau - for the observed oscillation period
     # O looks like Theta - for the equilibrium angle of the balance
@@ -20,7 +30,7 @@ def calc_G(T, O):
     R = .0449 # meters
     d = 0.06656 # meters
     M = .917 # Kilograms
-    return ((((2*pi/T)**2)*R**2)*d/M)*O
+    return ((((2*np.pi/T)**2)*R**2)*d/M)*O
 
 def chi_squared(ydata, y_bestfit, sigma):
     cs = np.sum(((ydata - y_bestfit)**2)/(sigma**2))
@@ -277,3 +287,12 @@ print("Intercept Standard Deviation:\t",e3[-1])
 print("Chi Square:\t\t\t",cs[0])
 print("Reduced Chi Square:\t\t",cs[1])
 print(72*'=')
+# ========================================================================
+# Calculate G
+# ========================================================================
+run1=calc_G(216, calc_O(.0082))
+run2=calc_G(216, calc_O(.0082-.000645))
+print("Run 1 has a calculated G of: ", run1)
+print("And a percent error of: ", diff_G(run1)*100)
+print("Run 2 has a calculated G of: ", run2)
+print("And a percent error of: ", diff_G(run2)*100)
