@@ -14,18 +14,9 @@ pi = np.pi
 # ----------------------------------------------------------------------
 # function definitions
 # ----------------------------------------------------------------------
-def calc_G(T, O):
-    # T stands Tau - for the observed oscillation period
-    # O looks like Theta - for the equilibrium angle of the balance
-    # Constant Definitions
-    R = .0449 # meters
-    d = 0.06656 # meters
-    M = .917 # Kilograms
-    return ((((2*pi/T)**2)*R**2)*d/M)*O
-
 def chi_squared(ydata, y_bestfit, sigma):
     cs = np.sum(((ydata - y_bestfit)**2)/(sigma**2))
-    csr = cs / 18
+    csr = cs / (len(ydata)-1)
     return (cs, csr)
 
 def W(n, xdata, ydata, yerror):
