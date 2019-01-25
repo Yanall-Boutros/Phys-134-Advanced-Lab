@@ -3,44 +3,48 @@ Equilibrium State One Error Analysis
 ========================================================================
 Slope Standard Deviation:	 0.0021651717707562336
 Intercept Standard Deviation:	 0.19850929598902764
-Chi Square:			 56.404186198619996
-Reduced Chi Square:		 3.133565899923333
+Chi Square:			 21.74625548461173
+Reduced Chi Square:		 1.2081253047006517
 ------------------------------------------------------------------------
 Decay State One Error Analysis
 ========================================================================
-Decay Value: 			 0.001314275875136092
-Amplitude:			 -46.514729278417825
-Frequency:			 0.02912328925835966
-Phase:				 0.04088865575070728
-Mean:				 101.09760091741755
-Chi Square:			 1216.0026055727199
-Reduced Chi Square:		 67.55570030959555
+Decay Value: 			 0.001314275955420331
+Amplitude:			 -46.51473076701226
+Frequency:			 0.029123289175111495
+Phase:				 0.04088861482169831
+Mean:				 101.09760089684386
+Chi Square:			 468.82164429354793
+Reduced Chi Square:		 26.045646905197106
 ------------------------------------------------------------------------
 Equilibrium State Two Error Analysis
 ========================================================================
 Slope Standard Deviation:	 0.00013861713978906146
 Intercept Standard Deviation:	 0.5142778767601037
-Chi Square:			 368.94506480514275
-Reduced Chi Square:		 20.496948044730154
+Chi Square:			 142.2442939037664
+Reduced Chi Square:		 7.902460772431466
 ------------------------------------------------------------------------
 Decay State Two Error Analysis
 ========================================================================
-Decay Value: 			 0.0011428839556549154
-Amplitude:			 43.55195308806751
-Frequency:			 0.029045374592383013
-Phase:				 -0.2028698617591002
-Mean:				 55.81496364118813
-Chi Square:			 2752.7848336607103
-Reduced Chi Square:		 152.93249075892834
+Decay Value: 			 0.001142884429608611
+Amplitude:			 43.55196324871984
+Frequency:			 0.029045373115947758
+Phase:				 -0.2028705041105336
+Mean:				 55.81496391724527
+Chi Square:			 1061.3177198603933
+Reduced Chi Square:		 58.96209554779963
 ------------------------------------------------------------------------
 Equilibrium State One Error Analysis
 ========================================================================
 Slope Standard Deviation:	 5.4753594521673546e-05
 Intercept Standard Deviation:	 0.4677875397942743
-Chi Square:			 324.2784177420043
-Reduced Chi Square:		 18.015467652333573
+Chi Square:			 125.02336786725607
+Reduced Chi Square:		 6.945742659292004
 ========================================================================
-Run 1 has a calculated G of:  9.789043047279457e-11
-And a percent error of:  46.7622645769034
-Run 2 has a calculated G of:  9.019051246609305e-11
-And a percent error of:  35.21815961932991
+Run 1 has a calculated G of:  9.349729895889354e-11
+And a percent error of:  40.17586050808627
+gerrp =  43.923986445117755
+gerrn =  36.427734571054785
+Run 2 has a calculated G of:  8.329043090349851e-11
+And a percent error of:  24.87320975037258
+gerrp =  28.62133568740407
+gerrn =  21.1250838133411
