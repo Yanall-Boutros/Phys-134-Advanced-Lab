@@ -14,7 +14,7 @@ import csv
 # Function Definitions
 # =======================================================================
 def determine_sigmas(yvals, ybestfit, return_sigma):
-    for j in range(10):
+    for j in range(5):
         rcs = chi_squared(yvals, ybestfit, return_sigma)[1]
         # for every error in return_sigma, if the change lowers the
         # reduced
@@ -22,17 +22,20 @@ def determine_sigmas(yvals, ybestfit, return_sigma):
         for i in range(len(return_sigma)):
             rcs = chi_squared(yvals, ybestfit, return_sigma)[1]
             copy = return_sigma[:]
-            copy[i] *= 5
+            copy[i] *= 1.1
             ccs = chi_squared(yvals, ybestfit, copy)[1]
-            if rcs > ccs:
+            if rcs > ccs and ccs >= 2:
                 # If the copied version is lower, save the changes, and
                 # rerun
                 return_sigma = copy.copy()
         # return the final result
     return return_sigma, rcs, ccs
-def diff_G(G):
+def diff_G(G, diff):
     gact = 6.67*10**-11
-    return (G - gact)/(gact)
+    gours = (G - gact)/(gact)
+    gerrp = (G - gact + diff)/gact
+    gerrn = (G - gact - diff)/gact
+    return gours, gerrp, gerrn 
 def calc_O(defl):
     L = 2.593
     return defl/(4*L)
@@ -160,10 +163,10 @@ plt.plot(e1vals[0], e1vals[1], color='red', linewidth=0.5,
 # ------------------------------------------------------------------------
 # Run error bar fix
 OG_ERRS = np.array([])
-rcs = 1
+rcs = 1.5
 ccs = 1
 return_sigma_0 = np.ones(len(pot_slice_0))
-while (rcs/ccs > 1.1):
+while (rcs/ccs > 1.49):
     return_sigma_0, rcs, ccs = determine_sigmas(
             pot_slice_0,
             e1vals[1],
@@ -176,11 +179,11 @@ OG_ERRS = np.append(OG_ERRS, return_sigma_0)
 dev = time_slice_1[0]
 time_slice_1 -= dev*np.ones(len(time_slice_1))
 # guess parameters
-param_1 = 0.00122 # b val, controls decay
-param_2 = -46.76  # a val, controls amp
-param_3 = 0.0289 # freq
-param_4 = -0.281 # phase
-param_5 = 99.68 # mean
+param_1 = 0.0013 # b val, controls decay
+param_2 = -46.51  # a val, controls amp
+param_3 = 0.0291 # freq
+param_4 = 0.0408 # phase
+param_5 = 101.1 # mean
 params1 = np.array([param_1, param_2, param_3, param_4, param_5])
 
 d1 = LeastSquaresFit(
@@ -195,7 +198,7 @@ d1[0] += dev*np.ones(len(d1[0]))
 time_slice_1 += dev*np.ones(len(time_slice_1))
 # ------------------------------------------------------------------------
 # Run error bar fix
-rcs = 1
+rcs = 2
 ccs = 1
 return_sigma_1 = np.ones(len(pot_slice_1))
 while (rcs/ccs > 1.1):
@@ -219,7 +222,7 @@ plt.plot(e2vals[0], e2vals[1], color='magenta', linewidth=0.5,
         label='Second Equilibrium Line of Best Fit', alpha=0.6)
 # ------------------------------------------------------------------------
 # Run error bar fix
-rcs = 1
+rcs = 2
 ccs = 1
 return_sigma_2 = np.ones(len(pot_slice_2))
 while (rcs/ccs > 1.1):
@@ -235,11 +238,11 @@ OG_ERRS = np.append(OG_ERRS, return_sigma_2)
 dev = time_slice_3[0]
 time_slice_3 -= dev*np.ones(len(time_slice_3))
 # Guess parameters for decay two
-param_1 = 0.001203
-param_2 = 47.6
+param_1 = 0.001142
+param_2 = 43.55
 param_3 = 0.029
-param_4 = -0.319
-param_5 = 54.1
+param_4 = -0.203
+param_5 = 55.8
 params3 = np.array([param_1, param_2, param_3, param_4, param_5])
 d2 = LeastSquaresFit(
         time_slice_3,
@@ -255,7 +258,7 @@ plt.plot(d2[0], d2[1], color='green', linewidth=0.5,
         label='Second Decay Line of Best Fit', alpha=0.6)
 # ------------------------------------------------------------------------
 # Run error bar fix
-rcs = 1
+rcs = 2
 ccs = 1
 return_sigma_3 = np.ones(len(pot_slice_3))
 while (rcs/ccs > 1.1):
@@ -279,7 +282,7 @@ plt.ylabel("Potential in mV")
 plt.savefig("rgbestfits.pdf")
 # ------------------------------------------------------------------------
 # Run error bar fix
-rcs = 1
+rcs = 2
 ccs = 1
 return_sigma_4 = np.ones(len(pot_slice_4))
 while (rcs/ccs > 1.1):
@@ -366,9 +369,15 @@ print(72*'=')
 # =======================================================================
 # Calculate G
 # =======================================================================
-run1=calc_G(216, calc_O(.0082))
-run2=calc_G(216, calc_O(.0082-.000645))
+run1=calc_G(216, calc_O(.007832))
+run2=calc_G(216, calc_O(.007832-.000855))
 print("Run 1 has a calculated G of: ", run1)
-print("And a percent error of: ", diff_G(run1)*100)
+gours, gerrp, gerrn = diff_G(run1, .25*10**-11)
+print("And a percent error of: ", gours*100)
+print("gerrp = ", gerrp*100)
+print("gerrn = ", gerrn*100)
+gours, gerrp, gerrn = diff_G(run2, .25*10**-11)
 print("Run 2 has a calculated G of: ", run2)
-print("And a percent error of: ", diff_G(run2)*100)
+print("And a percent error of: ", gours*100)
+print("gerrp = ", gerrp*100)
+print("gerrn = ", gerrn*100)
