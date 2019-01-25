@@ -13,6 +13,23 @@ import csv
 # =======================================================================
 # Function Definitions
 # =======================================================================
+def determine_sigmas(yvals, ybestfit, return_sigma):
+    for j in range(10):
+        rcs = chi_squared(yvals, ybestfit, return_sigma)[1]
+        # for every error in return_sigma, if the change lowers the
+        # reduced
+        # chi square, save the change to return sigma.
+        for i in range(len(return_sigma)):
+            rcs = chi_squared(yvals, ybestfit, return_sigma)[1]
+            copy = return_sigma[:]
+            copy[i] *= 5
+            ccs = chi_squared(yvals, ybestfit, copy)[1]
+            if rcs > ccs:
+                # If the copied version is lower, save the changes, and
+                # rerun
+                return_sigma = copy.copy()
+        # return the final result
+    return return_sigma, rcs, ccs
 def diff_G(G):
     gact = 6.67*10**-11
     return (G - gact)/(gact)
@@ -97,7 +114,7 @@ def LeastSquaresFit(xdata, ydata, y_sigma, func, params):
 # =======================================================================
 # Read in files from directory
 # =======================================================================
-with open('data-1.csv', newline='') as csvfile:
+with open('goodrun.csv', newline='') as csvfile:
     data = list(csv.reader(csvfile))
 # =======================================================================
 # Data Initialization
@@ -115,20 +132,20 @@ pot = np.array(pot)
 # The following slices were found by hand. When a new data csv file is
 # added, these indiceses will have ot be updated. After they are updated, 
 # the rest of the program should operate fine.
-pot_slice_0 = pot[:218] # Equilibrium one
-time_slice_0 = time[:218]
+pot_slice_0 = pot[:100] # Equilibrium one
+time_slice_0 = time[:100]
 
-pot_slice_1 = pot[218:2041] # decay 1
-time_slice_1 = time[218:2041]
+pot_slice_1 = pot[100:2000] # decay 1
+time_slice_1 = time[100:2000]
 
-pot_slice_2 = pot[2041:2555] # equil two
-time_slice_2 = time[2041:2555]
+pot_slice_2 = pot[2000:2625] # equil two
+time_slice_2 = time[2000:2625]
 
-pot_slice_3 = pot[2555:4400] # decay two
-time_slice_3 = time[2555:4400]
+pot_slice_3 = pot[2625:4750] # decay two
+time_slice_3 = time[2625:4750]
 
-pot_slice_4 = pot[4400:] # equil 3
-time_slice_4 = time[4400:]
+pot_slice_4 = pot[4750:] # equil 3
+time_slice_4 = time[4750:]
 # =======================================================================
 # Data Fitting and Plotting
 # =======================================================================
@@ -140,6 +157,18 @@ e1vals.append(time_slice_0)
 e1vals.append(e1[0]*time_slice_0 + e1[1])
 plt.plot(e1vals[0], e1vals[1], color='red', linewidth=0.5,
         label='First Equilibrium Line of Best Fit', alpha=0.6)
+# ------------------------------------------------------------------------
+# Run error bar fix
+OG_ERRS = np.array([])
+rcs = 1
+ccs = 1
+return_sigma_0 = np.ones(len(pot_slice_0))
+while (rcs/ccs > 1.1):
+    return_sigma_0, rcs, ccs = determine_sigmas(
+            pot_slice_0,
+            e1vals[1],
+            return_sigma_0)
+OG_ERRS = np.append(OG_ERRS, return_sigma_0)
 # -----------------------------------------------------------------------
 # Decay State One
 # -----------------------------------------------------------------------
@@ -164,6 +193,18 @@ d1 = LeastSquaresFit(
 # readjust
 d1[0] += dev*np.ones(len(d1[0]))
 time_slice_1 += dev*np.ones(len(time_slice_1))
+# ------------------------------------------------------------------------
+# Run error bar fix
+rcs = 1
+ccs = 1
+return_sigma_1 = np.ones(len(pot_slice_1))
+while (rcs/ccs > 1.1):
+    return_sigma_1, rcs, ccs = determine_sigmas(
+            pot_slice_1,
+            d1[1],
+            return_sigma_1)
+OG_ERRS = np.append(OG_ERRS, return_sigma_1)
+# ------------------------------------------------------------------------
 plt.plot(d1[0], d1[1], color='orange',
         linewidth=0.5,
         label='First Decay Line of Best Fit', alpha=0.6)
@@ -176,6 +217,17 @@ e2vals.append(time_slice_2)
 e2vals.append(e2[0]*time_slice_2 + e2[1])
 plt.plot(e2vals[0], e2vals[1], color='magenta', linewidth=0.5,
         label='Second Equilibrium Line of Best Fit', alpha=0.6)
+# ------------------------------------------------------------------------
+# Run error bar fix
+rcs = 1
+ccs = 1
+return_sigma_2 = np.ones(len(pot_slice_2))
+while (rcs/ccs > 1.1):
+    return_sigma_2, rcs, ccs = determine_sigmas(
+            pot_slice_2,
+            e2vals[1],
+            return_sigma_2)
+OG_ERRS = np.append(OG_ERRS, return_sigma_2)
 # -----------------------------------------------------------------------
 # Decay State Two
 # -----------------------------------------------------------------------
@@ -201,6 +253,17 @@ d2[0] += dev*np.ones(len(d2[0]))
 time_slice_3 += dev*np.ones(len(time_slice_3))
 plt.plot(d2[0], d2[1], color='green', linewidth=0.5,
         label='Second Decay Line of Best Fit', alpha=0.6)
+# ------------------------------------------------------------------------
+# Run error bar fix
+rcs = 1
+ccs = 1
+return_sigma_3 = np.ones(len(pot_slice_3))
+while (rcs/ccs > 1.1):
+    return_sigma_3, rcs, ccs = determine_sigmas(
+            pot_slice_3,
+            d2[1],
+            return_sigma_3)
+OG_ERRS = np.append(OG_ERRS, return_sigma_3)
 # -----------------------------------------------------------------------
 # Equilibrium State Three
 # -----------------------------------------------------------------------
@@ -213,24 +276,35 @@ plt.plot(e3vals[0], e3vals[1], color='cyan', linewidth=0.5,
 plt.legend(loc=1, prop={'size': 6})
 plt.xlabel("Time in Seconds")
 plt.ylabel("Potential in mV")
-plt.savefig("bestfits.pdf")
+plt.savefig("rgbestfits.pdf")
+# ------------------------------------------------------------------------
+# Run error bar fix
+rcs = 1
+ccs = 1
+return_sigma_4 = np.ones(len(pot_slice_4))
+while (rcs/ccs > 1.1):
+    return_sigma_4, rcs, ccs = determine_sigmas(
+            pot_slice_4,
+            e3vals[1],
+            return_sigma_4)
+OG_ERRS = np.append(OG_ERRS, return_sigma_4)
 # -----------------------------------------------------------------------
 # Plot Raw Data with Error Bars
 # -----------------------------------------------------------------------
-plt.errorbar(time, pot, yerr=np.ones(len(pot)), capsize=0.5,
+plt.errorbar(time, pot, yerr=OG_ERRS, capsize=0.5,
         marker='.', markersize=1, alpha=0.2,
         linestyle='', linewidth=0.5,
         zorder=10 ,color='blue', label="data")
 plt.legend(loc=1, prop={'size': 6})
 plt.xlabel("Time in Seconds")
 plt.ylabel("Potential in mV")
-plt.savefig("potvtime.pdf")
+plt.savefig("rgpotvtime.pdf")
 # =======================================================================
 # Print Error Analysis
 # =======================================================================
 # Equilibrium State One
 # -----------------------------------------------------------------------
-cs = chi_squared(pot_slice_0, e1vals[1], np.ones(len(pot_slice_0)))
+cs = chi_squared(pot_slice_0, e1vals[1], return_sigma_0)
 print(72*'=')
 print("Equilibrium State One Error Analysis")
 print(72*'=')
@@ -242,7 +316,7 @@ print(72*'-')
 # -----------------------------------------------------------------------
 # Decay State One
 # -----------------------------------------------------------------------
-cs = chi_squared(pot_slice_1, d1[1], np.ones(len(pot_slice_1)))
+cs = chi_squared(pot_slice_1, d1[1], return_sigma_1)
 print("Decay State One Error Analysis")
 print(72*'=')
 print("Decay Value: \t\t\t", d1[-1][0])
@@ -256,7 +330,7 @@ print(72*'-')
 # -----------------------------------------------------------------------
 # Equilibrium State Two
 # -----------------------------------------------------------------------
-cs = chi_squared(pot_slice_2, e2vals[1], np.ones(len(pot_slice_2)))
+cs = chi_squared(pot_slice_2, e2vals[1], return_sigma_2)
 print("Equilibrium State Two Error Analysis")
 print(72*'=')
 print("Slope Standard Deviation:\t", e2[-2])
@@ -267,7 +341,7 @@ print(72*'-')
 # -----------------------------------------------------------------------
 # Decay State Two
 # -----------------------------------------------------------------------
-cs = chi_squared(pot_slice_3, d2[1], np.ones(len(pot_slice_3)))
+cs = chi_squared(pot_slice_3, d2[1], return_sigma_3)
 print("Decay State Two Error Analysis")
 print(72*'=')
 print("Decay Value: \t\t\t", d2[-1][0])
@@ -281,7 +355,7 @@ print(72*'-')
 # -----------------------------------------------------------------------
 # Equilibrium State Two
 # -----------------------------------------------------------------------
-cs = chi_squared(pot_slice_4, e3vals[1], np.ones(len(pot_slice_4)))
+cs = chi_squared(pot_slice_4, e3vals[1], return_sigma_4)
 print("Equilibrium State One Error Analysis")
 print(72*'=')
 print("Slope Standard Deviation:\t", e3[-2])

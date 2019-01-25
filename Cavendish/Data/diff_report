@@ -1,0 +1,46 @@
+=============================================================	=============================================================
+Equilibrium State One Error Analysis				Equilibrium State One Error Analysis
+=============================================================	=============================================================
+Slope Standard Deviation:	 0.0006726520486313153	      |	Slope Standard Deviation:	 0.0021651717707562336
+Intercept Standard Deviation:	 0.13499240107267924	      |	Intercept Standard Deviation:	 0.19850929598902764
+Chi Square:			 478.480914014209	      |	Chi Square:			 56.404186198619996
+Reduced Chi Square:		 26.58227300078939	      |	Reduced Chi Square:		 3.133565899923333
+-------------------------------------------------------------	-------------------------------------------------------------
+Decay State One Error Analysis					Decay State One Error Analysis
+=============================================================	=============================================================
+Decay Value: 			 0.001224826586089688	      |	Decay Value: 			 0.001314275875136092
+Amplitude:			 -46.75998653858677	      |	Amplitude:			 -46.514729278417825
+Frequency:			 0.028911298544112136	      |	Frequency:			 0.02912328925835966
+Phase:				 -0.028050976525659892	      |	Phase:				 0.04088865575070728
+Mean:				 99.6787694451657	      |	Mean:				 101.09760091741755
+Chi Square:			 2368.2190761395145	      |	Chi Square:			 1216.0026055727199
+Reduced Chi Square:		 131.56772645219525	      |	Reduced Chi Square:		 67.55570030959555
+-------------------------------------------------------------	-------------------------------------------------------------
+Equilibrium State Two Error Analysis				Equilibrium State Two Error Analysis
+=============================================================	=============================================================
+Slope Standard Deviation:	 0.00018584287738072696	      |	Slope Standard Deviation:	 0.00013861713978906146
+Intercept Standard Deviation:	 0.684508152613561	      |	Intercept Standard Deviation:	 0.5142778767601037
+Chi Square:			 851.7265947602067	      |	Chi Square:			 368.94506480514275
+Reduced Chi Square:		 47.31814415334482	      |	Reduced Chi Square:		 20.496948044730154
+-------------------------------------------------------------	-------------------------------------------------------------
+Decay State Two Error Analysis					Decay State Two Error Analysis
+=============================================================	=============================================================
+Decay Value: 			 0.0012029546710454126	      |	Decay Value: 			 0.0011428839556549154
+Amplitude:			 47.66329609428083	      |	Amplitude:			 43.55195308806751
+Frequency:			 0.029036863165868922	      |	Frequency:			 0.029045374592383013
+Phase:				 -0.319267764525874	      |	Phase:				 -0.2028698617591002
+Mean:				 54.05644059137862	      |	Mean:				 55.81496364118813
+Chi Square:			 1051.649125934159	      |	Chi Square:			 2752.7848336607103
+Reduced Chi Square:		 58.42495144078661	      |	Reduced Chi Square:		 152.93249075892834
+-------------------------------------------------------------	-------------------------------------------------------------
+Equilibrium State One Error Analysis				Equilibrium State One Error Analysis
+=============================================================	=============================================================
+Slope Standard Deviation:	 0.00012269305252672909	      |	Slope Standard Deviation:	 5.4753594521673546e-05
+Intercept Standard Deviation:	 0.9308990225751956	      |	Intercept Standard Deviation:	 0.4677875397942743
+Chi Square:			 641.5368983390428	      |	Chi Square:			 324.2784177420043
+Reduced Chi Square:		 35.64093879661348	      |	Reduced Chi Square:		 18.015467652333573
+=============================================================	=============================================================
+Run 1 has a calculated G of:  9.789043047279457e-11		Run 1 has a calculated G of:  9.789043047279457e-11
+And a percent error of:  46.7622645769034			And a percent error of:  46.7622645769034
+Run 2 has a calculated G of:  9.019051246609305e-11		Run 2 has a calculated G of:  9.019051246609305e-11
+And a percent error of:  35.21815961932991			And a percent error of:  35.21815961932991
