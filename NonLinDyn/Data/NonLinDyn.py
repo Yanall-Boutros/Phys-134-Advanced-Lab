@@ -48,7 +48,15 @@ def linfit(xdata, ydata, yerror):
     
     return np.array([slope, intercept, sigma_slope, sigma_intercept])
 
-def current(xdata, w_0, phi, w, R, V_0, Gamma)
+def current(xdata, w_0, phi, w, R, V_0, Gamma):
+    pass
+
+def w_0(xdata, phi, Gamma):
+    # (xdata * tan(\phi) * Gamma - xdata**2)*-1
+    return xdata**2 - xdata*np.tan(phi)*Gamma
+
+def phi(xdata, res_freq, Gamma):
+    return np.arctan((xdata**2-res_freq**2)/(xdata*Gamma))
 
 def LeastSquaresFit(xdata, ydata, y_sigma, func_pntr, guess_params):
    # Least Squares Fit was originally a python program written by Prof.
