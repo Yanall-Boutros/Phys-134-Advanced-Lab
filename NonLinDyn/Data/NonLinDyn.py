@@ -52,7 +52,7 @@ def linfit(xdata, ydata, yerror):
 def current(xdata, w_0, phi, w, R, V_0, Gamma):
     pass
 nlvgp = [3300, 0.025, 193072*np.pi*2, 361152, 0.09138]
-lvgp = [100, 0.015, 13087*2*np.pi, 15861, 3.215]
+lvgp = [78.104, 0.00903, 13108*2*np.pi, 19533, 2.759]
 
 def volt(xdata, R=1, L=1, resfrq=1, Gamma=1, V0=1):
     num = V0 * xdata * (R/L)
@@ -75,7 +75,7 @@ def LeastSquaresFit(xdata, ydata, y_sigma, func_pntr, guess_params):
    if type(guess_params) is not type([]):
        print("Guess_Params must be type list.")
        return
-   xsmooth = np.linspace(np.min(xdata),np.max(xdata), 1000)
+   xsmooth = np.linspace(np.min(xdata),np.max(xdata), len(xdata))
    fsmooth = func_pntr(xsmooth, *guess_params)
    popt, pcov = opt.curve_fit(func_pntr, xdata, ydata,
            sigma=y_sigma, p0=guess_params, absolute_sigma=1)
@@ -163,6 +163,9 @@ nlpf = LeastSquaresFit(2*np.pi*infrq, np.deg2rad(phase),
 lpf = LeastSquaresFit(2*np.pi*lin_infrq,
         np.deg2rad(lin_phase),
         100*np.ones(len(lin_infrq)), phi, lin_phi_gp)
+nlv = LeastSquaresFit(2*np.pi*infrq, res_volt, res_err, volt, nlvgp)
+lv = LeastSquaresFit(2*np.pi*lin_infrq, lin_res_volt, lin_res_err,
+        volt, lvgp)
 # ------------------------------------------------------------------------
 # Plotting
 # ------------------------------------------------------------------------
@@ -188,6 +191,7 @@ plt.ylabel("Phase $\deg$")
 plt.savefig("linPhasevsFreq.pdf")
 plt.figure()
 # Nonlinear volt vs freq
+plt.plot(nlv[0]/(2*np.pi), nlv[1], linestyle="--")
 plt.errorbar(infrq, res_volt, xerr=inferr, yerr=res_err,
         linestyle="none", marker=".", label="Raw Data")
 plt.ylim(0, 0.04)
@@ -198,9 +202,53 @@ plt.ylabel("Voltage (Amps)")
 plt.savefig("VoltvsFreq.pdf")
 plt.figure()
 #linear volt vs freq
+plt.plot(lv[0]/(2*np.pi), lv[1], linestyle="--")
 plt.errorbar(lin_infrq, lin_res_volt, xerr=lin_inferr, yerr=lin_res_err,
         linestyle="none", marker=".", label="Raw Data")
 plt.title("Linear Response Voltage vs Input Frequency")
 plt.xlabel("Freqency $Hz$")
 plt.ylabel("Voltage (Amps)")
 plt.savefig("LinVoltvsFreq.pdf")
+
+# ========================================================================
+# Error Reporting
+# ========================================================================
+# Nonlinear Phase Error
+cs = chi_squared(phase, np.rad2deg(nlpf[1]), phase_err)
+print(72*"=")
+print("Nonlinear Phase Error Analysis")
+print(72*"=")
+print("Resonant Frequency:\t\t\t", nlpf[-1][0]/(2*np.pi))
+print("Gamma:\t\t\t\t\t", nlpf[-1][1])
+print("Reduced Chi Square:\t\t\t", cs[1])
+print(72*"=")
+# Linear Phase Error
+cs = chi_squared(lin_phase, np.rad2deg(lpf[1]), lin_phase_err)
+print("Linear Phase Error Analysis")
+print(72*"=")
+print("Resonant Frequency:\t\t\t", lpf[-1][0]/(2*np.pi))
+print("Gamma:\t\t\t\t\t", lpf[-1][1])
+print("Reduced Chi Square:\t\t\t", cs[1])
+print(72*"=")
+# Nonlinear Volt
+cs = chi_squared(res_volt, nlv[1], res_err)
+print("Nonlinear Volt Error Analysis")
+print(72*"=")
+print("R:\t\t\t\t\t", nlv[-1][0])
+print("L:\t\t\t\t\t", nlv[-1][1])
+print("Resonant Frequency:\t\t\t", nlv[-1][2])
+print("Gamma:\t\t\t\t\t", nlv[-1][3])
+print("Average input voltage:\t\t\t", nlv[-1][3])
+print("Reduced Chi Square:\t\t\t", cs[1])
+print(72*"=")
+# linear volt
+cs = chi_squared(lin_res_volt, lv[1], lin_res_err)
+print("Linear Volt Error Analysis")
+print(72*"=")
+print("R:\t\t\t\t\t", lv[-1][0])
+print("L:\t\t\t\t\t", lv[-1][1])
+print("Resonant Frequency:\t\t\t", lv[-1][2])
+print("Gamma:\t\t\t\t\t", lv[-1][3])
+print("Average input voltage:\t\t\t", lv[-1][3])
+print("Reduced Chi Square:\t\t\t", cs[1])
+print(72*"=")
