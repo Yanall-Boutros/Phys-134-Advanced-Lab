@@ -51,13 +51,17 @@ def linfit(xdata, ydata, yerror):
 
 def current(xdata, w_0, phi, w, R, V_0, Gamma):
     pass
-w_0_gp = [np.pi/2]
-def w_0(xdata, phi, Gamma=np.pi/2):
-    # (xdata * tan(\phi) * Gamma - xdata**2)*-1
-    return xdata**2 - xdata*np.tan(phi)*Gamma
+nlvgp = [3300, 0.025, 193072*np.pi*2, 361152, 0.09138]
+lvgp = [100, 0.015, 13087*2*np.pi, 15861, 3.215]
 
-nonlin_phi_gp = [192000*np.pi*2, 100000]
-lin_phi_gp = [13000*np.pi*2, 132000]
+def volt(xdata, R=1, L=1, resfrq=1, Gamma=1, V0=1):
+    num = V0 * xdata * (R/L)
+    den = ((resfrq**2 - xdata ** 2)**2 + (xdata*Gamma)**2)**0.5
+    return num/den
+
+nonlin_phi_gp = [193072*np.pi*2, 361152]
+lin_phi_gp = [13086*np.pi*2, 15861]
+
 def phi(xdata, res_freq=81640, Gamma=100000):
     return np.arctan(-1*(xdata**2-res_freq**2)/(xdata*Gamma))
 
@@ -153,11 +157,11 @@ lin_inferr = np.array(lin_inferr)
 # Fitting
 # ------------------------------------------------------------------------
 # Nonlinear phase and freq
-nlpf = LeastSquaresFit(2*np.pi*infrq, 192000*2*np.pi*np.ones(len(infrq)),
+nlpf = LeastSquaresFit(2*np.pi*infrq, np.deg2rad(phase),
         100*np.ones(len(infrq)), phi,
         nonlin_phi_gp)
 lpf = LeastSquaresFit(2*np.pi*lin_infrq,
-        13000*2*np.pi*np.ones(len(lin_infrq)),
+        np.deg2rad(lin_phase),
         100*np.ones(len(lin_infrq)), phi, lin_phi_gp)
 # ------------------------------------------------------------------------
 # Plotting
@@ -170,7 +174,6 @@ plt.errorbar(infrq, phase,
 plt.title("Nonlinear Phase versus Input Frequency")
 plt.xlabel("Frequency $Hz$")
 plt.ylabel("Phase $\deg$")
-plt.ylim(-20, 20)
 plt.savefig("nonlinPhasevsFreq.pdf")
 
 # Linear Phase vs Freq
@@ -193,3 +196,11 @@ plt.title("Nonlinear Response Voltage vs Input Frequency")
 plt.xlabel("Frequency $Hz$")
 plt.ylabel("Voltage (Amps)")
 plt.savefig("VoltvsFreq.pdf")
+plt.figure()
+#linear volt vs freq
+plt.errorbar(lin_infrq, lin_res_volt, xerr=lin_inferr, yerr=lin_res_err,
+        linestyle="none", marker=".", label="Raw Data")
+plt.title("Linear Response Voltage vs Input Frequency")
+plt.xlabel("Freqency $Hz$")
+plt.ylabel("Voltage (Amps)")
+plt.savefig("LinVoltvsFreq.pdf")
